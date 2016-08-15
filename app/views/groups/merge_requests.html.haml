@@ -1,0 +1,16 @@
+%h3.page-title
+  Merge Requests
+  %span.pull-right #{@merge_requests.total_count} merge requests
+
+%p.light
+  Only merge requests from
+  %strong #{@group.name}
+  group are listed here.
+  - if current_user
+    To see all merge requests you should visit #{link_to 'dashboard', merge_requests_dashboard_path} page.
+%hr
+.row
+  .col-md-3
+    = render 'shared/filter', entity: 'merge_request'
+  .col-md-9
+    = render 'shared/merge_requests'

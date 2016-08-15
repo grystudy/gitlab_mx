@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<title>
+
+GitLab
+</title>
+<link href="/gitlab/assets/favicon-220424ba6cb497309f8faf8545eb5408.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+<link href="/gitlab/assets/application-fe14759a04a962f9b600564a2f81af5c.css" media="screen" rel="stylesheet" />
+<script src="/gitlab/assets/application-9fc13fcf7c6d49d3ae20fa29a30b85f7.js"></script>
+<meta content="authenticity_token" name="csrf-param" />
+<meta content="9Xqai7mcY8IiKDfp75QsmZ3ZKWZQtB9798+0tUBvCRQ=" name="csrf-token" />
+<script type="text/javascript">
+//<![CDATA[
+window.gon={};gon.default_issues_tracker="gitlab";gon.api_version="v3";gon.gravatar_url="http://www.gravatar.com/avatar/%{hash}?s=%{size}\u0026d=mm";gon.relative_url_root="/gitlab";gon.gravatar_enabled=false;
+//]]>
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+
+</head>
+
+<body class='ui_basic login-page'>
+<div class='flash-container'>
+<div class='flash-alert'>
+You need to sign in before continuing.
+</div>
+</div>
+
+<div class='container'>
+<div class='content'>
+<center>
+<h1>GitLab</h1>
+<p class='light'>
+GitLab is open source software to collaborate on code.
+<br>
+<a href="/gitlab/users/sign_in">Sign in</a> or browse for <a href="/gitlab/public/projects">public projects</a>.
+</p>
+</center>
+</div>
+</div>
+<hr>
+<div class='container'>
+<div class='content'>
+<div class='login-box'>
+<h3 class='page-title'>Sign in</h3>
+<ul class='nav nav-tabs'>
+<li class='active'>
+<a data-toggle="tab" href="#tab-ldap">LDAP</a>
+</li>
+<li>
+<a data-toggle="tab" href="#tab-signin">Standard</a>
+</li>
+</ul>
+<div class='tab-content'>
+<div class='tab-pane active' id='tab-ldap'>
+<form accept-charset="UTF-8" action="/gitlab/users/auth/ldap/callback" id="new_ldap_user" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="9Xqai7mcY8IiKDfp75QsmZ3ZKWZQtB9798+0tUBvCRQ=" /></div>
+<input autofocus="autofocus" class="form-control top" id="username" name="username" placeholder="LDAP Login" type="text" />
+<input class="form-control bottom" id="password" name="password" placeholder="Password" type="password" />
+<br>
+<input class="btn-create btn" name="commit" type="submit" value="LDAP Sign in" />
+</form>
+
+
+</div>
+<div class='tab-pane' id='tab-signin'>
+<form accept-charset="UTF-8" action="/gitlab/users/sign_in" class="new_user" id="new_user" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="9Xqai7mcY8IiKDfp75QsmZ3ZKWZQtB9798+0tUBvCRQ=" /></div><input autofocus="autofocus" class="form-control top" id="user_login" name="user[login]" placeholder="Username or Email" type="text" />
+<input class="form-control bottom" id="user_password" name="user[password]" placeholder="Password" type="password" />
+<div class='clearfix append-bottom-10'>
+<label class='checkbox remember_me' for='user_remember_me'>
+<input name="user[remember_me]" type="hidden" value="0" /><input id="user_remember_me" name="user[remember_me]" type="checkbox" value="1" />
+<span>Remember me</span>
+</label>
+</div>
+<div>
+<input class="btn-create btn" name="commit" type="submit" value="Sign in" />
+<div class='pull-right'>
+<a class="btn" href="/gitlab/users/password/new">Forgot your password?</a>
+</div>
+</div>
+</form>
+
+
+</div>
+</div>
+
+<hr>
+<p>
+<span class='light'>Did not receive confirmation email?</span>
+<a href="/gitlab/users/confirmation/new">Send again</a>
+</p>
+</div>
+
+</div>
+</div>
+</body>
+</html>

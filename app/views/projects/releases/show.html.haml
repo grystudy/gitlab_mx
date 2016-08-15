@@ -1,0 +1,19 @@
+%h1 Releases
+%p Releases show the import binary versions to the users.
+%hr
+
+- unless @releases.empty?
+  %ul.bordered-list
+    - @releases.each do |release|
+      = render 'release', release: release
+
+  = paginate @releases, theme: 'gitlab'
+
+- else
+  .nothing-here-block
+    Repository has no releases yet.
+    %br
+    %small
+      Use repo release command to add a new one:
+      %br
+      %span.monospace repo release -a v1.4 -m 'version 1.4'

@@ -1,0 +1,6 @@
+.ui-box
+  .title Projects
+  %ul.well-list
+    - @projects.each do |project|
+      %li
+        = link_to_project project

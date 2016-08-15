@@ -1,0 +1,26 @@
+- commit = @releaserepo.commit(release.target)
+- tag = @repository.find_tag(release.name)
+- (tagcommit = @repository.commit(tag.target)) if tag
+%li
+  %h4
+    = link_to project_commits_path(@project, release.name), class: "" do
+      %i.icon-tag
+      = release.name
+    .pull-right
+      %small.cdark
+        %i.icon-calendar
+        #{time_ago_with_tooltip(commit.committed_date)}
+  - if tag
+    %p.prepend-left-20
+      Source :
+      = link_to_gfm truncate(tagcommit.title, length: 70), project_tree_path(@project, tag.name), class: "cdark"
+
+      %span.pull-right
+        - if can? current_user, :download_code, @project
+          = render 'projects/repositories/download_archive', ref: tag.name, btn_class: 'btn-grouped btn-group-small'
+
+
+  %p.prepend-left-20
+    Release Note :
+  .prepend-left-20
+    = markdown(commit.safe_message)

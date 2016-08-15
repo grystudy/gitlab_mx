@@ -1,0 +1,13 @@
+%h3.page-title
+  Issues
+  %span.pull-right #{@issues.total_count} issues
+
+%p.light
+  List all issues from all projects you have access to.
+%hr
+
+.row
+  .col-md-3
+    = render 'shared/filter', entity: 'issue'
+  .col-md-9
+    = render 'shared/issues'

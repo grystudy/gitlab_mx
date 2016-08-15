@@ -1,0 +1,7 @@
+%p
+  Assignee changed
+  - if @previous_assignee
+    from
+    %strong #{@previous_assignee.name}
+  to
+  %strong #{@merge_request.assignee_name}
