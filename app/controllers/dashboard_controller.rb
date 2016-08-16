@@ -23,7 +23,8 @@ class DashboardController < ApplicationController
     @last_push = current_user.recent_push
 
     @publicish_project_count = Project.publicish(current_user).count
-
+    @mxteams = MXTeamHelper.get_data
+   
     respond_to do |format|
       format.html
       format.json { pager_json("events/_events", @events.count) }

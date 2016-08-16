@@ -1,0 +1,20 @@
+.ui-box
+  .title.clearfix
+    = search_field_tag :filter_group, nil, placeholder: 'Filter by name', class: 'dash-filter form-control'
+    - if current_user.can_create_group?
+      %span.pull-right
+        = link_to new_mxteam_path, class: "btn btn-new" do
+          %i.icon-plus
+          美行组
+  %ul.well-list.dash-list
+    - mxteams.each do |group|
+      %li.group-row
+        = link_to mxteam_path(group[0]),class: 'group' do
+          = image_tag "/gitlab/assets/icon-link-a5bbeb5c2d1859b3a2801eae59208248.png", class: "avatar s24"
+          %span.group-name.filter-title
+            = truncate(group[0], length: 35)
+          %span.arrow
+            %i.icon-angle-right
+    - if mxteams.blank?
+      %li
+        .nothing-here-block You have no mxteams yet.
