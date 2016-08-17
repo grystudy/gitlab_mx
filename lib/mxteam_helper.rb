@@ -28,7 +28,7 @@ class MXTeamDepot
 
 	def ensure_data refresh_
 		data = @data
-		return if false &&!refresh_ && data && data.length >0 
+		return if false && (!refresh_) && data && data.length >0 
 		@data_lock.synchronize{
 			@data = MXTeamHelper.load
 		}

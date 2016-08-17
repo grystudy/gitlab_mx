@@ -5,14 +5,14 @@ class Mx::MxteamsController < Mx::ApplicationController
 
 	def create
 		name = params[:name]
-		unless name&&!name.empty?
+		unless name && !name.empty?
 			render action: "new" 
 			return
 		end
 		team = MXTeamHelper.init
 		team[0] = name
-		if MXTeamHelper.add_team team
-			redirect_to mxteam_path(name), notice: '美行组 was successfully created.'
+		if MXTeamHelper.add_team team			
+			redirect_to mxteam_path(name), notice: 'mxteam was successfully created.'
 		else
 			render action: "new"
 		end
