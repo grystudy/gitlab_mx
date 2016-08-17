@@ -4,7 +4,7 @@
       .title
         Projects (#{@projects.count})
         .pull-right
-          = link_to 'New Project', new_project_path, class: "btn btn-new"
+          = link_to 'Add Project', new_project_path, class: "btn btn-new"
       %ul.well-list
         - @projects.each do |project|
           %li
@@ -14,7 +14,6 @@
             .pull-right
               %span.label.label-gray
                 = repository_size(project)
-              = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
-              = link_to 'Destroy', [project], data: { confirm: remove_project_message(project) }, method: :delete, class: "btn btn-small btn-remove"
+              = link_to 'Delete', mxteam_path(@mxteam.mxteam_name)+"?delProjectId=#{project.id}", data: { confirm: "Are you sure ?" }, method: :put, class: "btn btn-small btn-remove"
         - if @projects.blank?
           .nothing-here-block 0 projects matches 

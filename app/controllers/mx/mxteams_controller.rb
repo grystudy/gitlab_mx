@@ -10,7 +10,7 @@ class Mx::MxteamsController < Mx::ApplicationController
 			return
 		end
 		team = MXTeamHelper.init
-		team.set_mxteam_name = name
+		team.mxteam_set_name = name
 		@mxteam = team
 		if MXTeamHelper.add_team team			
 			redirect_to mxteam_path(name), notice: 'mxteam was successfully created.'
@@ -20,9 +20,21 @@ class Mx::MxteamsController < Mx::ApplicationController
 	end
 
 	def show
+		mxteam
+		@projects = @mxteam.mxteam_projects
+	end
+
+	def update
+		mxteam
+		del_project_id = params[:delProjectId]
+		if del_project_id
+		else
+		end
+	end
+
+	def mxteam
 		name = params[:id]
 		team = MXTeamHelper.find_by_name name
 		@mxteam = team ? team : MXTeamHelper.init
-		@projects = @mxteam.mxteam_projects
 	end
 end

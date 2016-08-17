@@ -59,10 +59,11 @@ class Array
 		self[0]
 	end
 
-	def set_mxteam_name name_
+	def mxteam_set_name name_
 		return false unless length > 0
 		return false unless name_ && name_.length > 0
 		self[0] = name_
+		true
 	end
 
 	def mxteam_sub_item_ids index_
@@ -72,6 +73,13 @@ class Array
 		ids = str.split ';'
 		return [] unless ids && ids.length > 0
 		ids.map { |e| e.to_i }
+	end
+
+	def mxteam_set_sub_item_ids data_ , index_
+		return false unless length > index_
+		return false unless data_ 
+		self[index_] = data_.join ';'
+		true
 	end
 	
 	def mxteam_projects
@@ -87,6 +95,12 @@ class Array
 			end
 		end
 		res
+	end
+
+	def mxteam_del_project_ids items_
+		return false unless items_ && items_.length > 0
+		projects = mxteam_sub_item_ids 1
+		return mxteam_set_sub_item_ids MXTeamHelper.diff projects,items_
 	end
 end
 
@@ -180,6 +194,19 @@ class MXTeamHelper
 				end
 			end
 			true
+		end
+
+		def union array_1,array_2
+			return [] if !array_1 && !array_2
+			return array_1 if !array_2
+			return array_2 if !array_1
+			(array_1 + array_2).uniq
+		end
+
+		def diff array_1,array_2
+			return [] if !array_1 
+			return array_1 if !array_2
+			(array_1 - array_2).uniq
 		end
 	end
 end
