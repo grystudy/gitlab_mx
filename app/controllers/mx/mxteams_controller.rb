@@ -1,6 +1,6 @@
 class Mx::MxteamsController < Mx::ApplicationController
 	def new
-		@mxteam = MXTeamHelper.init
+		@mxteam = MXTeamHelper.new_mxteam 'new_mxteam'
 	end
 
 	def create
@@ -9,10 +9,9 @@ class Mx::MxteamsController < Mx::ApplicationController
 			render action: "new" 
 			return
 		end
-		team = MXTeamHelper.init
-		team.mxteam_set_name = name
+		team = MXTeamHelper.new_mxteam name
 		@mxteam = team
-		if MXTeamHelper.add_team team			
+		if MXTeamHelper.get_depot.save team			
 			redirect_to mxteam_path(name), notice: 'mxteam was successfully created.'
 		else
 			render action: "new"
@@ -34,7 +33,7 @@ class Mx::MxteamsController < Mx::ApplicationController
 
 	def mxteam
 		name = params[:id]
-		team = MXTeamHelper.find_by_name name
-		@mxteam = team ? team : MXTeamHelper.init
+		team = MXTeamHelper.get_depot.find_by_name name
+		@mxteam = team ? team : MXTeamHelper.new_mxteam("not found")
 	end
 end

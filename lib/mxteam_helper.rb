@@ -1,55 +1,63 @@
 class MXTeamDepot
+	Postfix = ".team"
+
 	def initialize
-		@data = []
-		@data_lock = Mutex.new
-		ensure_data true
+		@file_lock = Mutex.new
 	end
 
-	def add_team item_
-		ensure_data false
-		return nil unless item_
-		@data_lock.synchronize{
-			@data = [] unless @data
-			@data << item_
-		}
-		MXTeamHelper.save @data
-		@data
+	def find_by_name name_
+		data = get_names
+		return nil unless data
+		teams = data.select{|i_| i_.length > 0 && i_ == name_}
+		return nil unless teams && teams.length > 0
+		load teams[0]
 	end
 
-	def get_data
-		ensure_data false
-		@data
-	end
-
-	def save
-		ensure_data false
-		MXTeamHelper.save @data
-	end
-
-	def ensure_data refresh_
-		data = @data
-		return if false && (!refresh_) && data && data.length >0 
-		@data_lock.synchronize{
-			@data = MXTeamHelper.load
-		}
-		data = @data
-		if data && data.length >0 
-			@data_lock.synchronize{
-				data.each do |item_|
-					if item_&&item_.length < 3 
-						(0..(3-item_.length)).each do
-							item_ << ""
-						end
-					end
+	def get_names
+		dir = get_dir_name
+		return [] unless File.directory? dir
+		res = []
+		@file_lock.synchronize{
+			Dir.entries(dir).each do |f_name|
+				if File.file? File.join(dir,f_name)
+					ext = File.extname f_name
+					res << f_name if ext && ext.include?(Postfix)
 				end
-			}
-			return
+			end
+		}
+		res
+	end
+
+	def get_dir_name
+		"#{Rails.root}/public/mxteam_data"
+	end
+
+	def save data
+		return false unless data
+		dir = get_dir_name
+		@file_lock.synchronize{
+			MXTeamHelper.ensure_dir dir
+			MXTeamHelper.write File.join(dir,data.mxteam_name + Postfix),[data]
+		}
+		true
+	end
+
+	def load file_name
+		dir = get_dir_name
+		file_name = File.join dir,file_name
+		data = nil
+		@file_lock.synchronize{
+			data = MXTeamHelper.read file_name if File.exist? file_name
+		}
+		return nil unless data && data.length > 0
+		data.each do |item_|
+			if item_&&item_.length < 3 
+				(0..(3-item_.length)).each do
+					item_ << ""
+				end
+			end
 		end
-		@data = []
-		data = @data			
-		new_item = ["text_auto_created_team",Project.take.id,User.take.id]
-		data << new_item
-		MXTeamHelper.save data
+		data[0]
 	end
 end
 
@@ -106,28 +114,11 @@ end
 
 class MXTeamHelper
 	@depot 
-	@file_lock = Mutex.new
-
+	
 	Tab = "\t"
 	New_Line = "\n"
 
 	class << self
-		def find_by_name name_
-			data = get_data
-			return nil unless data
-			teams = data.select{|i_| i_.length > 0 && i_.mxteam_name == name_}
-			return nil unless teams && teams.length > 0
-			teams[0]
-		end
-
-		def get_data			
-			get_depot.get_data
-		end
-
-		def add_team item_
-			get_depot.add_team item_
-		end
-
 		def get_depot
 			depot = @depot
 			unless depot
@@ -137,33 +128,8 @@ class MXTeamHelper
 			depot
 		end
 
-		def init
-			["","",""]
-		end
-
-		def save data
-			return unless data
-			@file_lock.synchronize{
-				ensure_dir get_dir_name
-				write get_file_name,data
-			}
-		end
-
-		def load
-			data = nil
-			@file_lock.synchronize{
-				file_name = get_file_name				
-				data = read file_name if File.exist? file_name
-			}
-			data
-		end
-
-		def get_file_name
-			File.join get_dir_name,"mxteams.txt"
-		end
-
-		def get_dir_name
-			"#{Rails.root}/public/mxteam_data"
+		def new_mxteam name
+			[name ? name : "","",""]
 		end
 
 		def ensure_dir(dirName_)

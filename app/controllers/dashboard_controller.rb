@@ -23,7 +23,7 @@ class DashboardController < ApplicationController
     @last_push = current_user.recent_push
 
     @publicish_project_count = Project.publicish(current_user).count
-    @mxteams = MXTeamHelper.get_data
+    @mxteams = MXTeamHelper.get_depot.get_names
    
     respond_to do |format|
       format.html
