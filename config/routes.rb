@@ -3,7 +3,12 @@ require 'api/api'
 
 Gitlab::Application.routes.draw do
   scope module: 'mx' do
-    resources :mxteams
+    resources :mxteams do
+      member do
+        get "select_project"
+        get "import_users"
+      end
+    end
   end
  
   #

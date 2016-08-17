@@ -6,6 +6,7 @@ class MXTeamDepot
 	end
 
 	def find_by_name name_
+		name_ = name_ + Postfix
 		data = get_names
 		return nil unless data
 		teams = data.select{|i_| i_.length > 0 && i_ == name_}
@@ -105,10 +106,11 @@ class Array
 		res
 	end
 
-	def mxteam_del_project_ids items_
+	def mxteam_process_project_ids items_,add_or_diff
 		return false unless items_ && items_.length > 0
 		projects = mxteam_sub_item_ids 1
-		return mxteam_set_sub_item_ids MXTeamHelper.diff projects,items_
+		res = add_or_diff ? (MXTeamHelper.union projects,items_) : (MXTeamHelper.diff projects,items_)
+		mxteam_set_sub_item_ids res,1
 	end
 end
 
