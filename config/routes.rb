@@ -2,7 +2,9 @@ require 'sidekiq/web'
 require 'api/api'
 
 Gitlab::Application.routes.draw do
-  resources :mxteams, module: 'mx'
+  scope module: 'mx' do
+    resources :mxteams
+  end
  
   #
   # Search

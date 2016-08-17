@@ -53,6 +53,43 @@ class MXTeamDepot
 	end
 end
 
+class Array
+	def mxteam_name
+		return "" unless length > 0
+		self[0]
+	end
+
+	def set_mxteam_name name_
+		return false unless length > 0
+		return false unless name_ && name_.length > 0
+		self[0] = name_
+	end
+
+	def mxteam_sub_item_ids index_
+		return [] unless length > index_
+		str = self[index_]
+		return [] unless str && str.length > 0
+		ids = str.split ';'
+		return [] unless ids && ids.length > 0
+		ids.map { |e| e.to_i }
+	end
+	
+	def mxteam_projects
+		ids = mxteam_sub_item_ids 1 
+		return [] unless ids && ids.length > 0
+		res = []
+		ids.each do |item|
+			begin
+				project = Project.find(item)
+				res << project if project
+			rescue Exception => e
+				next
+			end
+		end
+		res
+	end
+end
+
 class MXTeamHelper
 	@depot 
 	@file_lock = Mutex.new
@@ -61,6 +98,14 @@ class MXTeamHelper
 	New_Line = "\n"
 
 	class << self
+		def find_by_name name_
+			data = get_data
+			return nil unless data
+			teams = data.select{|i_| i_.length > 0 && i_.mxteam_name == name_}
+			return nil unless teams && teams.length > 0
+			teams[0]
+		end
+
 		def get_data			
 			get_depot.get_data
 		end

@@ -9,10 +9,10 @@
   %ul.well-list.dash-list
     - mxteams.each do |group|
       %li.group-row
-        = link_to mxteam_path(group[0]),class: 'group' do
+        = link_to mxteam_path(group.mxteam_name),class: 'group' do
           = image_tag "/gitlab/assets/icon-link-a5bbeb5c2d1859b3a2801eae59208248.png", class: "avatar s24"
           %span.group-name.filter-title
-            = truncate(group[0], length: 35)
+            = truncate(group.mxteam_name, length: 35)
           %span.arrow
             %i.icon-angle-right
     - if mxteams.blank?
