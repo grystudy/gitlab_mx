@@ -93,17 +93,12 @@ class Array
 	
 	def mxteam_projects
 		ids = mxteam_sub_item_ids 1 
-		return [] unless ids && ids.length > 0
-		res = []
-		ids.each do |item|
-			begin
-				project = Project.find(item)
-				res << project if project
-			rescue Exception => e
-				next
-			end
-		end
-		res
+		return [] unless ids && ids.length > 0	
+		begin
+			return Project.where(id: ids).all
+		rescue Exception => e
+			return []
+		end		
 	end
 
 	def mxteam_process_project_ids items_,add_or_diff

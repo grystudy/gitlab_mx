@@ -6,7 +6,7 @@
 = form_tag mxteam_path(@mxteam.mxteam_name)+"?importing=#{@importing}", method: 'put', class: 'form-horizontal' do
   .form-group
     = label_tag :source_project_id, "Project", class: 'control-label'
-    .col-sm-10= select_tag(:source_project_id, options_from_collection_for_select(current_user.authorized_projects, :id, :name_with_namespace), prompt: "Select project", class: "select2 lg", required: true)
+    .col-sm-10= select_tag(:source_project_id, options_from_collection_for_select(Project.joins(:namespace).order('namespaces.name ASC'), :id, :name_with_namespace), prompt: "Select project", class: "select2 lg", required: true)
 
   .form-actions
     = submit_tag 'Add', class: "btn btn-create"
