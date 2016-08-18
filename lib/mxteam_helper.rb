@@ -101,11 +101,29 @@ class Array
 		end		
 	end
 
+	def mxteam_members
+		ids = mxteam_sub_item_ids 2 
+		return [] unless ids && ids.length > 0	
+		begin
+			return User.where(id: ids).all
+		rescue Exception => e
+			return []
+		end		
+	end
+
 	def mxteam_process_project_ids items_,add_or_diff
+		mxteam_process_ids items_,add_or_diff,1
+	end
+
+	def mxteam_process_member_ids items_,add_or_diff
+		mxteam_process_ids items_,add_or_diff,2
+	end
+
+	def mxteam_process_ids items_,add_or_diff,index_
 		return false unless items_ && items_.length > 0
-		projects = mxteam_sub_item_ids 1
+		projects = mxteam_sub_item_ids index_
 		res = add_or_diff ? (MXTeamHelper.union projects,items_) : (MXTeamHelper.diff projects,items_)
-		mxteam_set_sub_item_ids res,1
+		mxteam_set_sub_item_ids res,index_
 	end
 end
 

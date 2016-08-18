@@ -23,6 +23,11 @@ class Mx::MxteamsController < Mx::ApplicationController
 		@projects = @mxteam.mxteam_projects
 	end
 
+	def edit
+		mxteam
+		@members = @mxteam.mxteam_members
+	end
+
 	def update
 		mxteam
 		importing = params[:importing]

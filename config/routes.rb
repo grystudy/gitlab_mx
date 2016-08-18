@@ -7,6 +7,7 @@ Gitlab::Application.routes.draw do
       member do
         get "select_project"
         get "import_users"
+        get "select_user"
       end
     end
   end

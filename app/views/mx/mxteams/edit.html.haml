@@ -1,0 +1,9 @@
+%h3.page-title
+  Members in this mxteam.
+
+  - if current_user.can_create_project?
+    %span.pull-right
+      = link_to select_user_mxteam_path(@mxteam.mxteam_name), class: "btn btn-new btn-grouped", title: "New member" do
+        New member
+      = link_to import_users_mxteam_path(@mxteam.mxteam_name), class: "btn btn-grouped", title: "Import members from another project" do
+        Import members
