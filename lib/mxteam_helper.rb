@@ -111,6 +111,15 @@ class Array
 		end		
 	end
 
+	def mxteam_import_members_form_project_id id
+		return false unless id
+		project = Project.find_by(id: id)
+		return false unless project
+		user_ids = project.users_projects.pluck(:user_id)
+		return false unless user_ids
+		mxteam_process_member_ids user_ids,true
+	end
+
 	def mxteam_process_project_ids items_,add_or_diff
 		mxteam_process_ids items_,add_or_diff,1
 	end

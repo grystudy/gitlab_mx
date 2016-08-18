@@ -41,6 +41,10 @@ class Mx::MxteamsController < Mx::ApplicationController
 						return
 					end
 				when "1"
+					if @mxteam.mxteam_import_members_form_project_id(project_id.to_i) && save
+						redirect_to edit_mxteam_path(@mxteam.mxteam_name) ,notice: 'members was successfully imported.'
+						return
+					end
 				else
 				end
 			end
