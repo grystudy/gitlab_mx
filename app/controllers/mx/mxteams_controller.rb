@@ -3,6 +3,15 @@ class Mx::MxteamsController < Mx::ApplicationController
 		@mxteam = MXTeamHelper.new_mxteam 'new_mxteam'
 	end
 
+	def destroy
+		mxteam
+		if @mxteam.mxteam_destroy
+			redirect_to root_path, notice: 'mxteam was successfully deleted.'
+		else
+			redirect_to mxteam_path(@mxteam.mxteam_name), notice: 'failed.'
+		end
+	end
+
 	def create
 		name = params[:name]
 		unless name && name.length > 0
@@ -36,7 +45,7 @@ class Mx::MxteamsController < Mx::ApplicationController
 			if project_id
 				case importing
 				when "0"
-					if @mxteam.mxteam_process_project_ids([project_id.to_i],true) && save
+					if @mxteam.mxteam_process_project_ids(project_id.map { |e| e.to_i },true) && save
 						redirect_to mxteam_path(@mxteam.mxteam_name), notice: 'project was successfully added.'
 						return
 					end

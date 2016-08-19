@@ -6,12 +6,12 @@ class MXTeamDepot
 	end
 
 	def find_by_name name_
-		name_ = name_ + Postfix
+		return nil unless name_
 		data = get_names
 		return nil unless data
 		teams = data.select{|i_| i_.length > 0 && i_ == name_}
 		return nil unless teams && teams.length > 0
-		load teams[0]
+		load teams[0] + Postfix
 	end
 
 	def get_names
@@ -22,7 +22,7 @@ class MXTeamDepot
 			Dir.entries(dir).each do |f_name|
 				if File.file? File.join(dir,f_name)
 					ext = File.extname f_name
-					res << f_name if ext && ext.include?(Postfix)
+					res << File.basename(f_name,Postfix) if ext && ext.include?(Postfix)
 				end
 			end
 		}
@@ -48,7 +48,7 @@ class MXTeamDepot
 		file_name = File.join dir,file_name
 		data = nil
 		@file_lock.synchronize{
-			data = MXTeamHelper.read file_name if File.exist? file_name
+			data = MXTeamHelper.read file_name if File.exists? file_name
 		}
 		return nil unless data && data.length > 0
 		data.each do |item_|
@@ -60,9 +60,24 @@ class MXTeamDepot
 		end
 		data[0]
 	end
+
+	def delete team_name
+		return true unless team_name
+		file_name = File.join(get_dir_name,team_name + Postfix)
+		@file_lock.synchronize{
+			return true unless File.exists? file_name
+			File.delete file_name
+	  }
+		true
+	end
 end
 
 class Array
+	def mxteam_destroy
+		name = self[0]
+		MXTeamHelper.get_depot.delete name
+	end
+
 	def mxteam_name
 		return "" unless length > 0
 		self[0]

@@ -17,3 +17,16 @@
               = link_to 'Delete', mxteam_path(@mxteam.mxteam_name)+"?delProjectId=#{project.id}", data: { confirm: "Are you sure ?" }, method: :put, class: "btn btn-small btn-remove"
         - if @projects.blank?
           .nothing-here-block 0 projects matches 
+.row
+  - if current_user.admin
+    .ui-box.ui-box-danger
+      .title Remove project
+      .body
+        %p
+          Removing the mxteam.
+          %br
+          %strong Removed mxteam cannot be restored!
+        = link_to '删除美行组', mxteam_path(@mxteam.mxteam_name), data: { confirm: 'Are you sure ?' }, method: :delete, class: "btn btn-remove"
+  - else
+    .nothing-here-block Only admin user can remove a mxteam
+ 
