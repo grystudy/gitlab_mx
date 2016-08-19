@@ -5,8 +5,8 @@ class Mx::MxteamsController < Mx::ApplicationController
 
 	def create
 		name = params[:name]
-		unless name && !name.empty?
-			render action: "new" 
+		unless name && name.length > 0
+			redirect_to new_mxteam_path,notice: 'name is empty!'
 			return
 		end
 		team = MXTeamHelper.new_mxteam name
@@ -56,9 +56,26 @@ class Mx::MxteamsController < Mx::ApplicationController
 				redirect_to mxteam_path(@mxteam.mxteam_name), notice: 'project was successfully deleted.'
 				return
 			end
+		else
+			del_member_id = params[:delMemberId]
+			if del_member_id && @mxteam.mxteam_process_member_ids([del_member_id.to_i],false) && save
+				redirect_to edit_mxteam_path(@mxteam.mxteam_name),notice: 'member was successfully deleted.'
+				return
+			else
+				add_member = params[:addMember]
+				user_ids = params[:user_ids]
+				if add_member && user_ids && @mxteam.mxteam_process_member_ids(user_ids.map { |e| e.to_i },true) && save
+					redirect_to edit_mxteam_path(@mxteam.mxteam_name),notice: 'member(s) was successfully added.'
+					return
+				end
+			end
 		end
 
 		redirect_to mxteam_path(@mxteam.mxteam_name), notice: 'failed.'
+	end
+
+	def select_user
+		mxteam
 	end
 
 	def select_project

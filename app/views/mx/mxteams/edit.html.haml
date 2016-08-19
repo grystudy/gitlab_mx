@@ -7,3 +7,11 @@
         New member
       = link_to import_users_mxteam_path(@mxteam.mxteam_name), class: "btn btn-grouped", title: "Import members from another project" do
         Import members
+.team-table
+  - can_admin_project = (current_user.can_create_project?)
+  .ui-box
+    .title
+      members (#{@members.count})
+    %ul.well-list
+      - @members.each do |team_member|
+        = render 'team_member', member: team_member, current_user_can_admin_project: can_admin_project

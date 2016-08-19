@@ -26,7 +26,7 @@ class MXTeamDepot
 				end
 			end
 		}
-		res
+		res.sort
 	end
 
 	def get_dir_name
@@ -117,6 +117,7 @@ class Array
 		return false unless project
 		user_ids = project.users_projects.pluck(:user_id)
 		return false unless user_ids
+		return true if user_ids.length == 0
 		mxteam_process_member_ids user_ids,true
 	end
 
