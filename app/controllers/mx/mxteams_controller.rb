@@ -45,12 +45,12 @@ class Mx::MxteamsController < Mx::ApplicationController
 			if project_id
 				case importing
 				when "0"
-					if @mxteam.mxteam_process_project_ids(project_id.map { |e| e.to_i },true) && save
+					if @mxteam.mxteam_process_project_ids(project_id.map { |e| e.to_i },true)
 						redirect_to mxteam_path(@mxteam.mxteam_name), notice: 'project was successfully added.'
 						return
 					end
 				when "1"
-					if @mxteam.mxteam_import_members_form_project_id(project_id.to_i) && save
+					if @mxteam.mxteam_import_members_form_project_id(project_id.to_i)
 						redirect_to edit_mxteam_path(@mxteam.mxteam_name) ,notice: 'members was successfully imported.'
 						return
 					end
@@ -61,19 +61,19 @@ class Mx::MxteamsController < Mx::ApplicationController
 
 		del_project_id = params[:delProjectId]
 		if del_project_id
-			if @mxteam.mxteam_process_project_ids([del_project_id.to_i],false) && save
+			if @mxteam.mxteam_process_project_ids([del_project_id.to_i],false)
 				redirect_to mxteam_path(@mxteam.mxteam_name), notice: 'project was successfully deleted.'
 				return
 			end
 		else
 			del_member_id = params[:delMemberId]
-			if del_member_id && @mxteam.mxteam_process_member_ids([del_member_id.to_i],false) && save
+			if del_member_id && @mxteam.mxteam_process_member_ids([del_member_id.to_i],false)
 				redirect_to edit_mxteam_path(@mxteam.mxteam_name),notice: 'member was successfully deleted.'
 				return
 			else
 				add_member = params[:addMember]
 				user_ids = params[:user_ids]
-				if add_member && user_ids && @mxteam.mxteam_process_member_ids(user_ids.map { |e| e.to_i },true) && save
+				if add_member && user_ids && @mxteam.mxteam_process_member_ids(user_ids.map { |e| e.to_i },true)
 					redirect_to edit_mxteam_path(@mxteam.mxteam_name),notice: 'member(s) was successfully added.'
 					return
 				end
@@ -102,9 +102,5 @@ class Mx::MxteamsController < Mx::ApplicationController
 		name = params[:id]
 		team = MXTeamHelper.get_depot.find_by_name name
 		@mxteam = team ? team : MXTeamHelper.new_mxteam("not found")
-	end
-
-	def save
-		MXTeamHelper.get_depot.save @mxteam
 	end
 end

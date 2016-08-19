@@ -61,6 +61,18 @@ class MXTeamDepot
 		data[0]
 	end
 
+	def load_all_teams
+		names = get_names
+		return [] if names.empty?
+
+		res = []
+		names.each do |name|
+			data = load(name + Postfix)
+			res << data if data
+		end
+		res
+	end
+
 	def delete team_name
 		return true unless team_name
 		file_name = File.join(get_dir_name,team_name + Postfix)
@@ -68,6 +80,35 @@ class MXTeamDepot
 			return true unless File.exists? file_name
 			File.delete file_name
 	  }
+		true
+	end
+
+	def establish_rel pro_ids_,user_ids_
+		return true unless pro_ids_ && !pro_ids_.empty?
+		return true unless user_ids_ && !user_ids_.empty?
+		pro_ids_.each do |pro_id|
+			project = nil
+			begin
+				project = Project.find pro_id
+			rescue Exception => e
+				next
+			end
+			next unless project
+			pro_user_ids = project.users_projects.pluck(:user_id)
+			pro_user_ids = [] unless pro_user_ids
+			mem_to_add = []
+			user_ids_.each do |mem_id|
+				next if pro_user_ids.include? mem_id
+				mem_to_add << mem_id
+			end
+			project.team.add_users_ids(mem_to_add,:developer) unless mem_to_add.empty?
+		end
+		true
+	end
+
+	def break_rel pro_ids_,user_ids_
+		return true unless pro_ids_ && !pro_ids_.empty?
+		return true unless user_ids_ && !user_ids_.empty?
 		true
 	end
 end
@@ -137,10 +178,16 @@ class Array
 	end
 
 	def mxteam_process_project_ids items_,add_or_diff
+		members = mxteam_sub_item_ids 2 
+		depot = MXTeamHelper.get_depot
+		return false unless (add_or_diff ? depot.establish_rel(items_,members) : depot.break_rel(items_,members))
 		mxteam_process_ids items_,add_or_diff,1
 	end
 
 	def mxteam_process_member_ids items_,add_or_diff
+		projects = mxteam_sub_item_ids 1
+		depot = MXTeamHelper.get_depot
+		return false unless (add_or_diff ? depot.establish_rel(projects,items_) : depot.break_rel(projects,items_))
 		mxteam_process_ids items_,add_or_diff,2
 	end
 
@@ -148,7 +195,7 @@ class Array
 		return false unless items_ && items_.length > 0
 		projects = mxteam_sub_item_ids index_
 		res = add_or_diff ? (MXTeamHelper.union projects,items_) : (MXTeamHelper.diff projects,items_)
-		mxteam_set_sub_item_ids res,index_
+		mxteam_set_sub_item_ids(res,index_) && MXTeamHelper.get_depot.save(self)
 	end
 end
 
