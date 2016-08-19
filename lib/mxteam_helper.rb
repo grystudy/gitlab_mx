@@ -61,12 +61,12 @@ class MXTeamDepot
 		data[0]
 	end
 
-	def load_all_teams
+	def load_other_teams except_name
 		names = get_names
 		return [] if names.empty?
-
 		res = []
 		names.each do |name|
+			next if except_name && (name == except_name)
 			data = load(name + Postfix)
 			res << data if data
 		end
@@ -106,9 +106,24 @@ class MXTeamDepot
 		true
 	end
 
-	def break_rel pro_ids_,user_ids_
+	def break_rel cur_team_name_,pro_ids_,user_ids_
 		return true unless pro_ids_ && !pro_ids_.empty?
 		return true unless user_ids_ && !user_ids_.empty?
+		other_teams = load_other_teams cur_team_name_
+		pro_ids_.each do |pro_id|
+			project = nil
+			begin
+				project = Project.find pro_id
+			rescue Exception => e
+				next
+			end
+			next unless project
+			user_ids_.each do |mem_id|
+				next if other_teams.index{|i_| i_.mxteam_project_ids.include?(pro_id) && i_.mxteam_member_ids.include?(mem_id)}
+				relation = project.users_projects.find_by(user_id: mem_id) 
+				relation.destroy if relation && relation.project_access < Gitlab::Access::MASTER
+			end
+		end
 		true
 	end
 end
@@ -147,8 +162,12 @@ class Array
 		true
 	end
 	
+	def mxteam_project_ids
+		mxteam_sub_item_ids 1
+	end
+
 	def mxteam_projects
-		ids = mxteam_sub_item_ids 1 
+		ids = mxteam_project_ids
 		return [] unless ids && ids.length > 0	
 		begin
 			return Project.where(id: ids).all
@@ -157,8 +176,12 @@ class Array
 		end		
 	end
 
+	def mxteam_member_ids
+		mxteam_sub_item_ids 2 
+	end
+
 	def mxteam_members
-		ids = mxteam_sub_item_ids 2 
+		ids = mxteam_member_ids
 		return [] unless ids && ids.length > 0	
 		begin
 			return User.where(id: ids).all
@@ -178,16 +201,16 @@ class Array
 	end
 
 	def mxteam_process_project_ids items_,add_or_diff
-		members = mxteam_sub_item_ids 2 
+		members = mxteam_member_ids 
 		depot = MXTeamHelper.get_depot
-		return false unless (add_or_diff ? depot.establish_rel(items_,members) : depot.break_rel(items_,members))
+		return false unless (add_or_diff ? depot.establish_rel(items_,members) : depot.break_rel(mxteam_name,items_,members))
 		mxteam_process_ids items_,add_or_diff,1
 	end
 
 	def mxteam_process_member_ids items_,add_or_diff
-		projects = mxteam_sub_item_ids 1
+		projects = mxteam_project_ids
 		depot = MXTeamHelper.get_depot
-		return false unless (add_or_diff ? depot.establish_rel(projects,items_) : depot.break_rel(projects,items_))
+		return false unless (add_or_diff ? depot.establish_rel(projects,items_) : depot.break_rel(mxteam_name,projects,items_))
 		mxteam_process_ids items_,add_or_diff,2
 	end
 

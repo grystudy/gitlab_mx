@@ -3,8 +3,9 @@
     .ui-box
       .title
         Projects (#{@projects.count})
-        .pull-right
-          = link_to 'Add Project', select_project_mxteam_path(@mxteam.mxteam_name), class: "btn btn-new"
+        - if current_user.can_create_project?
+          .pull-right
+            = link_to 'Add Project', select_project_mxteam_path(@mxteam.mxteam_name), class: "btn btn-new"
       %ul.well-list
         - @projects.each do |project|
           %li
