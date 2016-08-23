@@ -22,12 +22,12 @@
 .row
   - if current_user.admin
     .ui-box.ui-box-danger
-      .title Remove project
+      .title 删除项目组
       .body
         %p
-          Removing the mxteam.
+          only admin user can delete it
           %br
-          %strong Removed mxteam cannot be restored!
+          %strong 删除后不能恢复!
         = link_to '删除项目组', mxteam_path(@mxteam.mxteam_name), data: { confirm: 'Are you sure ?' }, method: :delete, class: "btn btn-remove"
   - else
     .nothing-here-block Only admin user can remove a mxteam

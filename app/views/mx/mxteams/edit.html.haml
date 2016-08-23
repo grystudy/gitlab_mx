@@ -1,6 +1,6 @@
 - can_manage_mxteam = @setting_manager == 0 ? (@mxteam.mxteam_can_manage(current_user)) : current_user.admin
 %h3.page-title
-  Members in this mxteam.
+  = @setting_manager == 0 ? "人员:" : "负责人:"
 
   - if can_manage_mxteam
     %span.pull-right

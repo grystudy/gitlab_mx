@@ -11,4 +11,4 @@
 
   .form-actions
     = submit_tag 'Add users', class: "btn btn-create"
-    = link_to "Cancel", edit_mxteam_path(@mxteam.mxteam_name), class: "btn btn-cancel"
+    = link_to "Cancel", edit_mxteam_path(@mxteam.mxteam_name)+"?setting_manager=#{@setting_manager}", class: "btn btn-cancel"
