@@ -52,8 +52,8 @@ class MXTeamDepot
 		}
 		return nil unless data && data.length > 0
 		data.each do |item_|
-			if item_&&item_.length < 3 
-				(0..(3-item_.length)).each do
+			if item_&& item_.length < 4 
+				(0..(4-item_.length)).each do
 					item_ << ""
 				end
 			end
@@ -101,7 +101,7 @@ class MXTeamDepot
 				next if pro_user_ids.include? mem_id
 				mem_to_add << mem_id
 			end
-			project.team.add_users_ids(mem_to_add,:developer) unless mem_to_add.empty?
+			project.team.add_users_ids(mem_to_add,:reporter) unless mem_to_add.empty?
 		end
 		true
 	end
@@ -180,14 +180,34 @@ class Array
 		mxteam_sub_item_ids 2 
 	end
 
-	def mxteam_members
-		ids = mxteam_member_ids
+	def mxteam_manager_ids
+		mxteam_sub_item_ids 3
+	end
+
+	def mxteam_find_users ids
 		return [] unless ids && ids.length > 0	
 		begin
 			return User.where(id: ids).all
 		rescue Exception => e
 			return []
 		end		
+	end
+
+	def mxteam_members
+		ids = mxteam_member_ids
+		mxteam_find_users ids
+	end
+
+	def mxteam_managers
+		ids = mxteam_manager_ids
+		mxteam_find_users ids
+	end
+
+	def mxteam_can_manage user_
+		return true if user_.admin
+		manager_ids = mxteam_manager_ids
+		return true if manager_ids && manager_ids.include?(user_.id)
+		false
 	end
 
 	def mxteam_import_members_form_project_id id
@@ -212,6 +232,10 @@ class Array
 		depot = MXTeamHelper.get_depot
 		return false unless (add_or_diff ? depot.establish_rel(projects,items_) : depot.break_rel(mxteam_name,projects,items_))
 		mxteam_process_ids items_,add_or_diff,2
+	end
+
+	def mxteam_process_manager_ids items_,add_or_diff
+		mxteam_process_ids items_,add_or_diff,3
 	end
 
 	def mxteam_process_ids items_,add_or_diff,index_

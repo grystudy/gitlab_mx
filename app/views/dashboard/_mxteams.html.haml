@@ -1,11 +1,11 @@
 .ui-box
   .title.clearfix
     = search_field_tag :filter_group, nil, placeholder: 'Filter by name', class: 'dash-filter form-control'
-    - if current_user.can_create_group?
+    - if current_user.admin
       %span.pull-right
         = link_to new_mxteam_path, class: "btn btn-new" do
           %i.icon-plus
-          美行组
+          项目组
   %ul.well-list.dash-list
     - mxteams.each do |group|
       %li.group-row

@@ -1,14 +1,16 @@
+- can_manage_mxteam = @setting_manager == 0 ? (@mxteam.mxteam_can_manage(current_user)) : current_user.admin
 %h3.page-title
   Members in this mxteam.
 
-  - if current_user.can_create_project?
+  - if can_manage_mxteam
     %span.pull-right
-      = link_to select_user_mxteam_path(@mxteam.mxteam_name), class: "btn btn-new btn-grouped", title: "New member" do
+      = link_to select_user_mxteam_path(@mxteam.mxteam_name)+"?setting_manager=#{@setting_manager}", class: "btn btn-new btn-grouped", title: "New member" do
         New member
-      = link_to import_users_mxteam_path(@mxteam.mxteam_name), class: "btn btn-grouped", title: "Import members from another project" do
-        Import members
+      - if @setting_manager == 0  
+        = link_to import_users_mxteam_path(@mxteam.mxteam_name), class: "btn btn-grouped", title: "Import members from another project" do
+          Import members
 .team-table
-  - can_admin_project = (current_user.can_create_project?)
+  - can_admin_project = can_manage_mxteam
   .ui-box
     .title
       members (#{@members.count})

@@ -1,5 +1,7 @@
 %ul
   = nav_link(controller: :projects) do
-    = link_to "Projects", mxteam_path(@mxteam.mxteam_name)
+    = link_to "项目", mxteam_path(@mxteam.mxteam_name)
   = nav_link(controller: :users) do
-    = link_to "Members", edit_mxteam_path(@mxteam.mxteam_name) 
+    = link_to "人员", edit_mxteam_path(@mxteam.mxteam_name) 
+  = nav_link(controller: :users) do
+    = link_to "负责人", edit_mxteam_path(@mxteam.mxteam_name)+"?setting_manager=1"

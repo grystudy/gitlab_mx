@@ -34,7 +34,9 @@ class Mx::MxteamsController < Mx::ApplicationController
 
 	def edit
 		mxteam
-		@members = @mxteam.mxteam_members
+		b = is_setting_manager
+		@members = b ? @mxteam.mxteam_managers : @mxteam.mxteam_members
+		@setting_manager = b ? 1 : 0
 	end
 
 	def update
@@ -67,15 +69,29 @@ class Mx::MxteamsController < Mx::ApplicationController
 			end
 		else
 			del_member_id = params[:delMemberId]
-			if del_member_id && @mxteam.mxteam_process_member_ids([del_member_id.to_i],false)
-				redirect_to edit_mxteam_path(@mxteam.mxteam_name),notice: 'member was successfully deleted.'
-				return
+			if del_member_id 
+				if is_setting_manager
+					if @mxteam.mxteam_process_manager_ids([del_member_id.to_i],false)
+						redirect_to edit_mxteam_path(@mxteam.mxteam_name)+"?setting_manager=1",notice: 'manager was successfully deleted.'
+						return
+					end
+				elsif @mxteam.mxteam_process_member_ids([del_member_id.to_i],false)
+					redirect_to edit_mxteam_path(@mxteam.mxteam_name),notice: 'member was successfully deleted.'
+					return
+				end
 			else
 				add_member = params[:addMember]
 				user_ids = params[:user_ids]
-				if add_member && user_ids && @mxteam.mxteam_process_member_ids(user_ids.map { |e| e.to_i },true)
-					redirect_to edit_mxteam_path(@mxteam.mxteam_name),notice: 'member(s) was successfully added.'
-					return
+				if add_member && user_ids
+					if is_setting_manager
+						if @mxteam.mxteam_process_manager_ids(user_ids.map { |e| e.to_i },true)
+							redirect_to edit_mxteam_path(@mxteam.mxteam_name)+"?setting_manager=1",notice: 'manager(s) was successfully added.'
+							return
+						end
+					elsif @mxteam.mxteam_process_member_ids(user_ids.map { |e| e.to_i },true)
+						redirect_to edit_mxteam_path(@mxteam.mxteam_name),notice: 'member(s) was successfully added.'
+						return
+					end
 				end
 			end
 		end
@@ -85,6 +101,8 @@ class Mx::MxteamsController < Mx::ApplicationController
 
 	def select_user
 		mxteam
+		b = is_setting_manager
+		@setting_manager = b ? 1 : 0
 	end
 
 	def select_project
@@ -102,5 +120,11 @@ class Mx::MxteamsController < Mx::ApplicationController
 		name = params[:id]
 		team = MXTeamHelper.get_depot.find_by_name name
 		@mxteam = team ? team : MXTeamHelper.new_mxteam("not found")
+	end
+
+	def is_setting_manager
+		str = params[:setting_manager] 
+		return false unless str
+		str == "1"
 	end
 end

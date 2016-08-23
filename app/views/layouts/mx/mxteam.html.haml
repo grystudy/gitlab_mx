@@ -1,9 +1,9 @@
 !!! 5
 %html{ lang: "en"}
-  = render "layouts/head", title: "美行组"
+  = render "layouts/head", title: "项目组"
   %body{class: "#{app_theme} admin", :'data-page' => body_data_page}
     = render "layouts/broadcast"
-    = render "layouts/head_panel", title: "美行组: " + @mxteam.mxteam_name
+    = render "layouts/head_panel", title: "项目组: " + @mxteam.mxteam_name
     = render "layouts/flash"
     %nav.main-nav.navbar-collapse.collapse
       .container= render 'layouts/mx/nav/mxteam'

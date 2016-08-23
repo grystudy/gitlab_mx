@@ -3,7 +3,7 @@
   .pull-right
     - if current_user_can_admin_project
       - unless false && user == current_user
-        = link_to mxteam_path(@mxteam.mxteam_name)+"?delMemberId=#{user.id}", method: :put, class: "btn-tiny btn btn-remove", title: 'Remove member from team' do
+        = link_to mxteam_path(@mxteam.mxteam_name)+"?delMemberId=#{user.id}&setting_manager=#{@setting_manager}", method: :put, class: "btn-tiny btn btn-remove", title: 'Remove member from team' do
           %i.icon-minus.icon-white
   = image_tag avatar_icon(user.email, 32), class: "avatar s32"
   %p

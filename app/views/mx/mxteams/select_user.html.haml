@@ -1,7 +1,7 @@
 %h3.page-title
   = "New mxteam member(s)"
 
-= form_tag mxteam_path(@mxteam.mxteam_name)+"?addMember=1", method: 'put', class: "form-horizontal users-project-form" do
+= form_tag mxteam_path(@mxteam.mxteam_name)+"?addMember=1&setting_manager=#{@setting_manager}", method: 'put', class: "form-horizontal users-project-form" do
 
   %p Choose people you want in the mxteam
   .form-group

@@ -1,9 +1,9 @@
 = form_tag(action: "create",method: "post") do
   .form-group
-    = label_tag :name,"美行组名",:class=> 'control-label'
+    = label_tag :name,"项目组名",:class=> 'control-label'
     .col-sm-10
       = text_field_tag :name,"",:placeholder=> "Ex. app", :class=> 'form-control',:required => true, :pattern => "[^.][^\/]+"
   .form-actions
-    = submit_tag 'Create 美行组'
+    = submit_tag 'Create 项目组'
 
 

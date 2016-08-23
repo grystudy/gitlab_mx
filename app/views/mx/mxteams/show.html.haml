@@ -3,7 +3,7 @@
     .ui-box
       .title
         Projects (#{@projects.count})
-        - if current_user.can_create_project?
+        - if @mxteam.mxteam_can_manage(current_user)
           .pull-right
             = link_to 'Add Project', select_project_mxteam_path(@mxteam.mxteam_name), class: "btn btn-new"
       %ul.well-list
@@ -15,7 +15,8 @@
             .pull-right
               %span.label.label-gray
                 = repository_size(project)
-              = link_to 'Delete', mxteam_path(@mxteam.mxteam_name)+"?delProjectId=#{project.id}", data: { confirm: "Are you sure ?" }, method: :put, class: "btn btn-small btn-remove"
+              - if @mxteam.mxteam_can_manage(current_user)
+                = link_to 'Delete', mxteam_path(@mxteam.mxteam_name)+"?delProjectId=#{project.id}", data: { confirm: "Are you sure ?" }, method: :put, class: "btn btn-small btn-remove"
         - if @projects.blank?
           .nothing-here-block 0 projects matches 
 .row
@@ -27,7 +28,7 @@
           Removing the mxteam.
           %br
           %strong Removed mxteam cannot be restored!
-        = link_to '删除美行组', mxteam_path(@mxteam.mxteam_name), data: { confirm: 'Are you sure ?' }, method: :delete, class: "btn btn-remove"
+        = link_to '删除项目组', mxteam_path(@mxteam.mxteam_name), data: { confirm: 'Are you sure ?' }, method: :delete, class: "btn btn-remove"
   - else
     .nothing-here-block Only admin user can remove a mxteam
  
