@@ -29,11 +29,19 @@ class Mx::MxteamsController < Mx::ApplicationController
 
 	def show
 		mxteam
+		if !@mxteam.mxteam_can_manage(current_user)
+			redirect_to root_path, notice: 'you can not manager this mxteam!'
+			return
+		end
 		@projects = @mxteam.mxteam_projects
 	end
 
 	def edit
 		mxteam
+		if !@mxteam.mxteam_can_manage(current_user)
+			redirect_to root_path, notice: 'you can not manager this mxteam!'
+			return
+		end
 		b = is_setting_manager
 		@members = b ? @mxteam.mxteam_managers : @mxteam.mxteam_members
 		@setting_manager = b ? 1 : 0
